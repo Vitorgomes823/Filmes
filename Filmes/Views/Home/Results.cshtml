@@ -1,0 +1,38 @@
+﻿@using Newtonsoft.Json.Linq
+@model JToken
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resultados</title>
+    <style>
+        img {
+            width: 200px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .movie {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Resultados da Busca</h1>
+    <ul>
+        @foreach (var movie in Model)
+        {
+            var posterPath = movie["poster_path"]?.ToString(); // Caminho da imagem
+            var imageUrl = $"https://image.tmdb.org/t/p/w500/{posterPath}"; // URL completa da imagem
+
+            <li class="movie">
+                <img src="@imageUrl" alt="Poster de @movie["title"]" />
+                <strong>@movie["title"]</strong><br />
+                <em>Lançamento:</em> @movie["release_date"]<br />
+                <em>Sinopse:</em> @movie["overview"]<br />
+                <hr />
+            </li>
+        }
+    </ul>
+</body>
+</html>

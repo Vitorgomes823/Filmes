@@ -1,0 +1,29 @@
+﻿@using Newtonsoft.Json.Linq
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Buscar Filmes</title>
+</head>
+<body>
+    <h1>Buscar Filmes</h1>
+
+    <!-- Formulário para o usuário escolher -->
+    <form method="get" action="/Home/Search">
+        <label for="query">Digite o título do filme:</label>
+        <input type="text" id="query" name="query" placeholder="Ex.: Inception" required />
+        <button type="submit">Buscar</button>
+    </form>
+
+    <form method="get" action="/Home/Filter">
+        <label for="genre">Escolha o gênero:</label>
+        <select id="genre" name="genre">
+            <option value="28">Ação</option>
+            <option value="35">Comédia</option>
+            <option value="18">Drama</option>
+            <option value="878">Ficção Científica</option>
+            <option value="53">Suspense</option>
+        </select>
+        <button type="submit">Filtrar</button>
+    </form>
+</body>
+</html>
