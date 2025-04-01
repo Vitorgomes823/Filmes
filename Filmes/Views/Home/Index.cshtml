@@ -1,29 +1,70 @@
-﻿@using Newtonsoft.Json.Linq
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <title>Buscar Filmes</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Estilos adicionais para personalização */
+        body {
+            background: linear-gradient(270deg, #ff6a00, #ee0979);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+            color: white;
+        }
+        .card {
+            border-radius: 15px;
+        }
+        .btn-primary, .btn-success {
+            border-radius: 50px;
+        }
+
+        .custom-header {
+            font-family: 'Arial', sans-serif;
+            color: white;
+            font-weight: 700;
+        }
+
+        .spacer {
+            height: 100px; /* Espaçamento ajustável */
+        }
+    </style>
 </head>
 <body>
-    <h1>Buscar Filmes</h1>
+    <div class="container mt-5">
+        <!-- Título -->
+        <div class="text-center">
+            <h1 class="custom-header">🎥 Buscar Filmes</h1>
+            <p class="text" style="color: white">Encontre os melhores filmes com facilidade.</p>
+        </div>
 
-    <!-- Formulário para o usuário escolher -->
-    <form method="get" action="/Home/Search">
-        <label for="query">Digite o título do filme:</label>
-        <input type="text" id="query" name="query" placeholder="Ex.: Inception" required />
-        <button type="submit">Buscar</button>
-    </form>
+        <!-- Card de Formulários -->
+        <div class="card shadow-lg mx-auto p-4 mt-4" style="max-width: 500px;">
+            <!-- Formulário de Busca -->
+            <form method="get" action="/Home/Search" class="mb-4">
+                <label for="query" class="form-label">Digite o título do filme:</label>
+                <input type="text" id="query" name="query" class="form-control" placeholder="Ex.: Inception" required>
+                <button type="submit" class="btn btn-primary w-100 mt-3">🔍 Buscar</button>
+            </form>
 
-    <form method="get" action="/Home/Filter">
-        <label for="genre">Escolha o gênero:</label>
-        <select id="genre" name="genre">
-            <option value="28">Ação</option>
-            <option value="35">Comédia</option>
-            <option value="18">Drama</option>
-            <option value="878">Ficção Científica</option>
-            <option value="53">Suspense</option>
-        </select>
-        <button type="submit">Filtrar</button>
-    </form>
+            <!-- Formulário de Filtro -->
+            <form method="get" action="/Home/Filter">
+                <label for="genre" class="form-label">Escolha o gênero:</label>
+                <select id="genre" name="genre" class="form-select">
+                    <option value="28">🎬 Ação</option>
+                    <option value="35">😂 Comédia</option>
+                    <option value="18">🎭 Drama</option>
+                    <option value="878">🚀 Ficção Científica</option>
+                    <option value="53">😱 Suspense</option>
+                </select>
+                <button type="submit" class="btn btn-success w-100 mt-3">📋 Filtrar</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="spacer"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

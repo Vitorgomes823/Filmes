@@ -10,7 +10,7 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly HttpClient _httpClient; // Adicionado HttpClient como campo privado
-    private readonly string _apiKey = "e626f31fa6b34557eb711628d474d831"; // Sua chave de API
+    private readonly string _apiKey = "e626f31fa6b34557eb711628d474d831"; // Chave de API
 
     public HomeController(ILogger<HomeController> logger)
     {
