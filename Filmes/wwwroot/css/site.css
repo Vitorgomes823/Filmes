@@ -40,3 +40,48 @@ body {
         background-position: 0% 50%;
     }
 }
+
+
+/* Estilo da navbar */
+.navbar {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra leve para destaque */
+    background-color: #f8f9fa; /* Cor profissional e neutra */
+    padding: 10px 20px;
+}
+
+/* Alinhamento central dos links */
+.navbar-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Links da navbar */
+.nav-link {
+    color: #343a40; /* Cor escura para contraste */
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase; /* Aparência moderna */
+    padding: 8px 20px;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+    .nav-link:hover {
+        color: #007bff; /* Azul moderno ao passar o mouse */
+        transform: scale(1.05); /* Efeito leve de ampliação */
+    }
+
+/* Brand (logo da navbar) */
+.navbar-brand {
+    color: #007bff; /* Azul moderno */
+    font-size: 24px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .navbar-nav {
+        flex-direction: column; /* Links empilhados em telas pequenas */
+    }
+}

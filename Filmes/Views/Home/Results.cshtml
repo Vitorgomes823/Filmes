@@ -21,23 +21,36 @@
             margin-bottom: 20px;
             background-color: rgba(255, 255, 255, 0.1); /* Card translúcido */
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            transition: transform 0.3s ease, background-color 0.3s ease; /* Transição suave */
         }
 
-        img {
+            .movie-card:hover {
+                transform: scale(1.1); /* Ampliação do card */
+                background-color: rgba(255, 255, 255, 0.2); /* Destaque no hover */
+            }
+
+        .movie-poster {
             border-radius: 10px;
-            width: 100%;
-            max-width: 200px;
-            height: auto;
+            width: 200px;
+            height: 300px; /* Padronizar altura das imagens */
+            transition: transform 0.3s ease; /* Animação suave */
         }
 
-        .custom-header {
-            font-family: 'Arial', sans-serif;
-            font-weight: 700;
-            margin-bottom: 30px;
+        .movie-card:hover .movie-poster {
+            transform: scale(1.00); /* Ampliar o pôster quando o card é ampliado */
         }
 
-         .spacer
-        {
+        .movie-info {
+            display: none; /* Esconde título, data e sinopse inicialmente */
+            margin-top: 20px; /* Espaçamento entre imagem e texto */
+        }
+
+            .movie-info.show {
+                display: block; /* Exibe os detalhes ao clicar */
+            }
+
+        .spacer {
             height: 100px; /* Espaçamento ajustável */
         }
     </style>
@@ -47,7 +60,7 @@
         <!-- Título -->
         <div class="text-center">
             <h1 class="custom-header">🍿 Resultados da Busca</h1>
-            <p class="text">Confira os filmes encontrados!</p>
+            <p class="text">Clique nos pôsteres para ver mais detalhes!</p>
         </div>
 
         <!-- Listagem dos Filmes -->
@@ -58,11 +71,13 @@
                 var imageUrl = $"https://image.tmdb.org/t/p/w500/{posterPath}"; // URL completa da imagem
 
                 <div class="col-md-4 mb-4">
-                    <div class="movie-card">
-                        <img src="@imageUrl" alt="Poster de @movie["title"]" class="mx-auto d-block" />
-                        <h3 class="mt-2 text-center">@movie["title"]</h3>
-                        <p><strong>Lançamento:</strong> @movie["release_date"]</p>
-                        <p><strong>Sinopse:</strong> @movie["overview"]</p>
+                    <div class="movie-card" onclick="toggleDetails(this)">
+                        <img src="@imageUrl" alt="Poster de @movie["title"]" class="movie-poster" />
+                        <div class="movie-info">
+                            <h3>@movie["title"]</h3>
+                            <p><strong>Lançamento:</strong> @movie["release_date"]</p>
+                            <p><strong>Sinopse:</strong> @movie["overview"]</p>
+                        </div>
                     </div>
                 </div>
             }
@@ -70,6 +85,19 @@
     </div>
 
     <div class="spacer"></div>
+
+    <script>
+        function toggleDetails(card) {
+            const info = card.querySelector('.movie-info'); // Encontra o texto do card
+            const isVisible = info.classList.contains('show'); // Verifica se os detalhes estão visíveis
+
+            // Alternar a exibição do texto
+            info.classList.toggle('show', !isVisible);
+
+            // Alterar o estado do card
+            card.classList.toggle('active', !isVisible);
+        }
+    </script>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
