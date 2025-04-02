@@ -1,1 +1,72 @@
-﻿<h1>teste</h1>
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Página de Membros</title>
+    <style>
+        .container {
+            display: flex;
+            gap: 30px;
+        }
+
+        .card {
+            width: 300px;
+            height: 300px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+            .card img {
+                width: 150px;
+                height: 150px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+
+            .card.fullscreen {
+                width: 100vw;
+                height: 100vh;
+                border-radius: 0;
+                position: fixed;
+                top: 0;
+                left: 0;
+                box-shadow: none;
+            }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card" id="card1" onclick="toggleFullscreen('card1')">
+            <img src="foto1.jpg" alt="Membro 1">
+        </div>
+        <div class="card" id="card2" onclick="toggleFullscreen('card2')">
+            <img src="foto2.jpg" alt="Membro 2">
+        </div>
+    </div>
+
+    <script>
+        function toggleFullscreen(cardId) {
+            const card = document.getElementById(cardId);
+            const otherCardId = cardId === 'card1' ? 'card2' : 'card1';
+            const otherCard = document.getElementById(otherCardId);
+
+            if (card.classList.contains('fullscreen')) {
+                card.classList.remove('fullscreen');
+                otherCard.classList.remove('hidden');
+            } else {
+                card.classList.add('fullscreen');
+                otherCard.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
