@@ -3,9 +3,22 @@
 <head>
     <title>Página de Membros</title>
     <style>
+        body {
+            margin: 0;
+            background-color: #f0f0f0;
+            overflow: hidden; /* Remove rolagem desnecessária */
+        }
+
+        .main-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: calc(100vh - 50px); /* Altura menos a navbar */
+        }
+
         .container {
             display: flex;
-            gap: 30px;
+            gap: 20px;
         }
 
         .card {
@@ -28,15 +41,33 @@
                 object-fit: cover;
             }
 
-            .card.fullscreen {
-                width: 100vw;
-                height: 100vh;
-                border-radius: 0;
-                position: fixed;
-                top: 0;
-                left: 0;
-                box-shadow: none;
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #fff;
+            display: flex; /* Corrigido para usar flex */
+            flex-direction: row; /* Organiza imagem e texto lado a lado */
+            justify-content: space-between; /* Texto na direita e imagem na esquerda */
+            align-items: center;
+            padding: 20px;
+            gap: 20px; /* Espaço entre imagem e texto */
+            z-index: 9999; /* Garante visibilidade prioritária */
+        }
+
+            .fullscreen img {
+                width: 50%; /* Amplia imagem no modo fullscreen */
+                height: 95%;
+                border-radius: 10px;
             }
+
+        .text-area {
+            width: 40%; /* Espaço para texto à direita */
+            font-size: 18px;
+            color: #333;
+        }
 
         .hidden {
             display: none;
@@ -44,12 +75,14 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card" id="card1" onclick="toggleFullscreen('card1')">
-            <img src="foto1.jpg" alt="Membro 1">
-        </div>
-        <div class="card" id="card2" onclick="toggleFullscreen('card2')">
-            <img src="foto2.jpg" alt="Membro 2">
+    <div class="main-content">
+        <div class="container" style="margin-left: 75%">
+            <div class="card" id="card1" onclick="toggleFullscreen('card1')">
+                <img src="https://media.licdn.com/dms/image/v2/D4D03AQGc8C66HR_tEQ/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1672980045555?e=1749081600&v=beta&t=hDXEyCR3rHt_q020HO6sxXQ1TmwI20-6eNUPpOA3jjY" alt="Membro 1">
+            </div>
+            <div class="card" id="card2" onclick="toggleFullscreen('card2')">
+                <img src="https://media.licdn.com/dms/image/v2/D4D03AQEH29UbOI8cSA/profile-displayphoto-shrink_400_400/B4DZXXrL6EHAAk-/0/1743080177784?e=1749081600&v=beta&t=zrosQe4Ppt9FGDCvv8h-fFlbHbn1oT2q7nMQBkVOGUY" alt="Membro 2">
+            </div>
         </div>
     </div>
 
@@ -61,10 +94,18 @@
 
             if (card.classList.contains('fullscreen')) {
                 card.classList.remove('fullscreen');
-                otherCard.classList.remove('hidden');
+                const textArea = card.querySelector('.text-area');
+                if (textArea) textArea.remove(); // Remove o texto descritivo
+                otherCard.classList.remove('hidden'); // Torna o outro card visível
             } else {
                 card.classList.add('fullscreen');
-                otherCard.classList.add('hidden');
+                otherCard.classList.add('hidden'); // Esconde o outro card
+
+                // Adiciona o texto descritivo
+                const textArea = document.createElement('div');
+                textArea.className = 'text-area';
+                textArea.innerHTML = '<p>Desenvolvedor Full Stack</p>';
+                card.appendChild(textArea);
             }
         }
     </script>
