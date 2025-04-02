@@ -6,19 +6,19 @@
         body {
             margin: 0;
             background-color: #f0f0f0;
-            overflow: hidden; /* Remove rolagem desnecessária */
         }
 
         .main-content {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: calc(100vh - 50px); /* Altura menos a navbar */
+            height: calc(100vh - 50px);
         }
 
         .container {
             display: flex;
             gap: 20px;
+            justify-content: center;
         }
 
         .card {
@@ -26,13 +26,19 @@
             height: 300px;
             border-radius: 15px;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             background-color: #fff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
             cursor: pointer;
         }
+
+            .card:hover {
+                transform: scale(1.05);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            }
 
             .card img {
                 width: 150px;
@@ -41,52 +47,71 @@
                 object-fit: cover;
             }
 
+            .card p {
+                margin-top: 10px;
+                font-size: 16px;
+                color: #333;
+                text-align: center;
+            }
+
         .fullscreen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-color: #fff;
-            display: flex; /* Corrigido para usar flex */
-            flex-direction: row; /* Organiza imagem e texto lado a lado */
-            justify-content: space-between; /* Texto na direita e imagem na esquerda */
+            background-color: rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            padding: 20px;
-            gap: 20px; /* Espaço entre imagem e texto */
-            z-index: 9999; /* Garante visibilidade prioritária */
+            z-index: 9999;
+            opacity: 0;
+            animation: fadeIn 0.8s forwards;
         }
 
             .fullscreen img {
-                width: 50%; /* Amplia imagem no modo fullscreen */
-                height: 95%;
+                width: 250px;
+                height: 250px;
                 border-radius: 10px;
+                margin-bottom: 20px;
+                opacity: 0;
+                animation: fadeIn 0.8s 0.3s forwards;
             }
 
-        .text-area {
-            width: 40%; /* Espaço para texto à direita */
-            font-size: 18px;
-            color: #333;
-        }
+            .fullscreen p {
+                font-size: 20px;
+                color: #333;
+                text-align: center;
+                opacity: 0;
+                animation: fadeIn 0.8s 0.6s forwards;
+            }
 
         .hidden {
             display: none;
         }
-    </style>
+        </style>
 </head>
 <body>
     <div class="main-content">
-        <div class="container" style="margin-left: 75%">
+        <div class="container">
             <div class="card" id="card1" onclick="toggleFullscreen('card1')">
-                <img src="https://media.licdn.com/dms/image/v2/D4D03AQGc8C66HR_tEQ/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1672980045555?e=1749081600&v=beta&t=hDXEyCR3rHt_q020HO6sxXQ1TmwI20-6eNUPpOA3jjY" alt="Membro 1">
+                <img src="https://media.licdn.com/dms/image/v2/D4D03AQGc8C66HR_tEQ/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1672980045555?e=1749081600&v=beta&t=hDXEyCR3rHt_q020HO6sxXQ1TmwI20-6eNUPpOA3jjY" alt="Henrique Costa">
+                <p>Henrique Costa</p>
             </div>
             <div class="card" id="card2" onclick="toggleFullscreen('card2')">
-                <img src="https://media.licdn.com/dms/image/v2/D4D03AQEH29UbOI8cSA/profile-displayphoto-shrink_400_400/B4DZXXrL6EHAAk-/0/1743080177784?e=1749081600&v=beta&t=zrosQe4Ppt9FGDCvv8h-fFlbHbn1oT2q7nMQBkVOGUY" alt="Membro 2">
+                <img src="https://media.licdn.com/dms/image/v2/D4D03AQEH29UbOI8cSA/profile-displayphoto-shrink_400_400/B4DZXXrL6EHAAk-/0/1743080177784?e=1749081600&v=beta&t=zrosQe4Ppt9FGDCvv8h-fFlbHbn1oT2q7nMQBkVOGUY" alt="Vitor Gomes">
+                <p>Vitor Gomes</p>
             </div>
         </div>
     </div>
 
     <script>
+        const descriptions = {
+            card1: "Henrique Costa - Desenvolvedor Full Stack: Criativo e ágil!",
+            card2: "Vitor Gomes - Desenvolvedor em Formação: Expansão Full Stack com base sólida em C# e .NET, além de APIs e Front-end."
+        };
+
         function toggleFullscreen(cardId) {
             const card = document.getElementById(cardId);
             const otherCardId = cardId === 'card1' ? 'card2' : 'card1';
@@ -94,18 +119,16 @@
 
             if (card.classList.contains('fullscreen')) {
                 card.classList.remove('fullscreen');
-                const textArea = card.querySelector('.text-area');
-                if (textArea) textArea.remove(); // Remove o texto descritivo
+                card.innerHTML = `
+                    <img src="${card.querySelector('img').src}" alt="${card.querySelector('p').innerText}">
+                    <p>${card.querySelector('p').innerText}</p>`;
                 otherCard.classList.remove('hidden'); // Torna o outro card visível
             } else {
                 card.classList.add('fullscreen');
+                card.innerHTML = `
+                    <img src="${card.querySelector('img').src}" alt="${card.querySelector('p').innerText}">
+                    <p>${descriptions[cardId]}</p>`;
                 otherCard.classList.add('hidden'); // Esconde o outro card
-
-                // Adiciona o texto descritivo
-                const textArea = document.createElement('div');
-                textArea.className = 'text-area';
-                textArea.innerHTML = '<p>Desenvolvedor Full Stack</p>';
-                card.appendChild(textArea);
             }
         }
     </script>

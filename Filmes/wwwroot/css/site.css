@@ -85,3 +85,14 @@ body {
         flex-direction: column; /* Links empilhados em telas pequenas */
     }
 }
+
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
