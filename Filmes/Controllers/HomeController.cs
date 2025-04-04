@@ -48,16 +48,40 @@ public class HomeController : Controller
             var response = await _httpClient.GetAsync($"search/movie?api_key={_apiKey}&language=pt-BR&query={query}");
             response.EnsureSuccessStatusCode();
             var jsonResponse = await response.Content.ReadAsStringAsync();
-            var movies = JObject.Parse(jsonResponse)["results"]; // Pega os resultados
+            var movies = JObject.Parse(jsonResponse)["results"];
 
-            return View("Results", movies); // Exibe na View Results
+            foreach (var movie in movies)
+            {
+                var movieId = movie["id"].ToString();
+
+                // Requisição para buscar onde o filme está disponível
+                var streamingResponse = await _httpClient.GetAsync($"movie/{movieId}/watch/providers?api_key={_apiKey}");
+                streamingResponse.EnsureSuccessStatusCode();
+                var streamingJson = await streamingResponse.Content.ReadAsStringAsync();
+                var streamingPlatforms = JObject.Parse(streamingJson)?["results"]?["BR"]?["flatrate"];
+
+                if (streamingPlatforms != null)
+                {
+                    var platformNames = streamingPlatforms.Select(p => p["provider_name"].ToString()).ToList();
+                    movie["streamingPlatforms"] = string.Join(", ", platformNames); // Apenas os nomes
+                }
+                else
+                {
+                    movie["streamingPlatforms"] = "Nenhuma plataforma encontrada";
+                }
+            }
+
+            return View("Results", movies); // Garante que um resultado seja sempre retornado
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao buscar filmes.");
+            _logger.LogError(ex, "Erro ao buscar filmes e plataformas de streaming.");
+
+            // Retorno em caso de erro - OBRIGATÓRIO para evitar o erro de compilação
             return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
+
 
     public async Task<IActionResult> Filter(string genre)
     {
@@ -67,14 +91,35 @@ public class HomeController : Controller
             var response = await _httpClient.GetAsync($"discover/movie?api_key={_apiKey}&language=pt-BR&with_genres={genre}");
             response.EnsureSuccessStatusCode();
             var jsonResponse = await response.Content.ReadAsStringAsync();
-            var movies = JObject.Parse(jsonResponse)["results"]; // Pega os resultados
+            var movies = JArray.Parse(JObject.Parse(jsonResponse)["results"].ToString()); // Obtém os resultados como JArray
 
-            return View("Results", movies); // Exibe na View Results
+            foreach (var movie in movies)
+            {
+                var movieId = movie["id"].ToString();
+
+                // Requisição para buscar onde o filme está disponível
+                var streamingResponse = await _httpClient.GetAsync($"movie/{movieId}/watch/providers?api_key={_apiKey}");
+                streamingResponse.EnsureSuccessStatusCode();
+                var streamingJson = await streamingResponse.Content.ReadAsStringAsync();
+                var streamingPlatforms = JObject.Parse(streamingJson)?["results"]?["BR"]?["flatrate"];
+
+                if (streamingPlatforms != null)
+                {
+                    var platformNames = streamingPlatforms.Select(p => p["provider_name"].ToString()).ToList();
+                    movie["streamingPlatforms"] = string.Join(", ", platformNames); // Apenas os nomes das plataformas
+                }
+                else
+                {
+                    movie["streamingPlatforms"] = "Nenhuma plataforma encontrada";
+                }
+            }
+
+            return View("Results", movies); // Exibe na View Results com filmes e as plataformas de streaming
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao filtrar filmes.");
-            return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            _logger.LogError(ex, "Erro ao filtrar filmes e buscar plataformas de streaming.");
+            return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier }); // Retorno em caso de erro
         }
     }
 
