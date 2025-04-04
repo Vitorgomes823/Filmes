@@ -69,7 +69,7 @@
             @foreach (var movie in Model)
             {
                 var posterPath = movie["poster_path"]?.ToString(); // Caminho da imagem
-                var imageUrl = !string.IsNullOrEmpty(posterPath)
+                var imageUrl = !string.IsNullOrWhiteSpace(posterPath)
                 ? $"https://image.tmdb.org/t/p/w500/{posterPath}" // URL da imagem se disponível
                 : "https://picsum.photos/200/300"; // Placeholder se não houver pôster
 
