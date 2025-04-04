@@ -46,7 +46,8 @@ public class HomeController : Controller
         {
             // Requisição para buscar um filme pelo título
             var response = await _httpClient.GetAsync($"search/movie?api_key={_apiKey}&language=pt-BR&query={query}");
-            response.EnsureSuccessStatusCode();
+            response.EnsureSuccessStatusCode(); // Garante que a resposta tenha sido bem-sucedida
+
             var jsonResponse = await response.Content.ReadAsStringAsync();
             var movies = JObject.Parse(jsonResponse)["results"];
 
@@ -54,33 +55,46 @@ public class HomeController : Controller
             {
                 var movieId = movie["id"].ToString();
 
-                // Requisição para buscar onde o filme está disponível
-                var streamingResponse = await _httpClient.GetAsync($"movie/{movieId}/watch/providers?api_key={_apiKey}");
-                streamingResponse.EnsureSuccessStatusCode();
-                var streamingJson = await streamingResponse.Content.ReadAsStringAsync();
-                var streamingPlatforms = JObject.Parse(streamingJson)?["results"]?["BR"]?["flatrate"];
+                try
+                {
+                    // Requisição para buscar onde o filme está disponível
+                    var streamingResponse = await _httpClient.GetAsync($"movie/{movieId}/watch/providers?api_key={_apiKey}");
+                    streamingResponse.EnsureSuccessStatusCode();
 
-                if (streamingPlatforms != null)
-                {
-                    var platformNames = streamingPlatforms.Select(p => p["provider_name"].ToString()).ToList();
-                    movie["streamingPlatforms"] = string.Join(", ", platformNames); // Apenas os nomes
+                    var streamingJson = await streamingResponse.Content.ReadAsStringAsync();
+                    var streamingPlatforms = JObject.Parse(streamingJson)?["results"]?["BR"]?["flatrate"];
+
+                    if (streamingPlatforms != null)
+                    {
+                        var platformNames = streamingPlatforms.Select(p => p["provider_name"].ToString()).ToList();
+                        movie["streamingPlatforms"] = string.Join(", ", platformNames); // Adiciona os nomes das plataformas
+                    }
+                    else
+                    {
+                        movie["streamingPlatforms"] = "Nenhuma plataforma encontrada";
+                    }
                 }
-                else
+                catch (HttpRequestException httpEx)
                 {
-                    movie["streamingPlatforms"] = "Nenhuma plataforma encontrada";
+                    _logger.LogWarning(httpEx, $"Erro ao buscar plataformas para o filme com ID {movieId}");
+                    movie["streamingPlatforms"] = "Erro ao obter as plataformas de streaming";
                 }
             }
 
-            return View("Results", movies); // Garante que um resultado seja sempre retornado
+            return View("Results", movies); // Renderiza a view com os resultados
+        }
+        catch (HttpRequestException httpEx)
+        {
+            _logger.LogError(httpEx, "Erro na requisição à API de busca de filmes");
+            return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao buscar filmes e plataformas de streaming.");
-
-            // Retorno em caso de erro - OBRIGATÓRIO para evitar o erro de compilação
+            _logger.LogError(ex, "Erro inesperado ao processar a busca");
             return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
+
 
 
     public async Task<IActionResult> Filter(string genre)
