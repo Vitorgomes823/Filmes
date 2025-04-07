@@ -46,20 +46,13 @@ body {
 .navbar {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra leve para destaque */
     background-color: #f8f9fa; /* Cor profissional e neutra */
-    padding: 10px 20px;
 }
 
-/* Alinhamento central dos links */
-.navbar-nav {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+
 
 /* Links da navbar */
 .nav-link {
     color: #343a40; /* Cor escura para contraste */
-    font-size: 16px;
     font-weight: bold;
     text-transform: uppercase; /* Aparência moderna */
     padding: 8px 20px;
@@ -74,7 +67,6 @@ body {
 /* Brand (logo da navbar) */
 .navbar-brand {
     color: #007bff; /* Azul moderno */
-    font-size: 24px;
     font-weight: bold;
     text-transform: uppercase;
 }

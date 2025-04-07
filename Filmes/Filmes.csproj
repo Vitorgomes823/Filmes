@@ -18,6 +18,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Remove="API\Streaming.cs" />
 	  <Compile Remove="Controllers\MoviesController.cs" />
 	</ItemGroup>
 

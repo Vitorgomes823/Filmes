@@ -54,6 +54,34 @@
         .spacer {
             height: 100px; /* Espaçamento ajustável */
         }
+
+        .custom-button {
+            background: linear-gradient(90deg, #ee0979, #ff6a00);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+            .custom-button:hover {
+                background: linear-gradient(90deg, #ff6a00, #ee0979); /* Muda a direção do gradiente no hover */
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Sombra mais intensa */
+                transform: scale(1.1); /* Ampliação do botão */
+            }
+
+            .custom-button:active {
+                background: #ff5722; /* Cor sólida ao clicar */
+                transform: scale(0.95); /* Efeito de "pressionar" */
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+
     </style>
 </head>
 <body>
@@ -81,9 +109,26 @@
                             <p><strong>Lançamento:</strong> @movie["release_date"]</p>
                             <p><strong>Streaming:</strong> @movie["streamingPlatforms"]</p>
                             <p><strong>Sinopse:</strong> @movie["overview"]</p>
+                            <button class="custom-button" onclick="fetchTrailer('@movie["id"]')">Ver trailer</button>
                         </div>
                     </div>
                 </div>
+
+                <!-- Modal para exibir o trailer -->
+                <div class="modal" id="trailerModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Trailer</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <iframe id="trailerFrame" width="100%" height="400px" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             }
         </div>
     </div>
@@ -101,6 +146,30 @@
             // Alterar o estado do card
             card.classList.toggle('active', !isVisible);
         }
+
+                        async function fetchTrailer(movieId) {
+            try {
+                const response = await fetch(`/api/getTrailer/${movieId}`);
+                const data = await response.json();
+
+                if (data.trailerUrl) {
+                    const trailerFrame = document.getElementById('trailerFrame');
+                    trailerFrame.src = data.trailerUrl; // Adiciona o link do trailer ao iframe
+                    const modal = new bootstrap.Modal(document.getElementById('trailerModal'));
+                    modal.show();
+                } else {
+                    alert('Trailer não encontrado!');
+                }
+            } catch (error) {
+                console.error('Erro ao buscar o trailer:', error);
+                alert('Ocorreu um erro ao buscar o trailer.');
+            }
+        }
+            document.getElementById('trailerModal').addEventListener('hidden.bs.modal', function () {
+            const trailerFrame = document.getElementById('trailerFrame');
+            trailerFrame.src = ''; // Limpa o src para parar o vídeo
+        });
+
     </script>
 
     <!-- Bootstrap JS -->

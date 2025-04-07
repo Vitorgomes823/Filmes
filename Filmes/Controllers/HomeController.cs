@@ -73,15 +73,21 @@ public class HomeController : Controller
                     {
                         movie["streamingPlatforms"] = "Nenhuma plataforma encontrada";
                     }
+
+
+
                 }
                 catch (HttpRequestException httpEx)
                 {
                     _logger.LogWarning(httpEx, $"Erro ao buscar plataformas para o filme com ID {movieId}");
                     movie["streamingPlatforms"] = "Erro ao obter as plataformas de streaming";
                 }
+
+
             }
 
             return View("Results", movies); // Renderiza a view com os resultados
+
         }
         catch (HttpRequestException httpEx)
         {
@@ -92,6 +98,40 @@ public class HomeController : Controller
         {
             _logger.LogError(ex, "Erro inesperado ao processar a busca");
             return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+    }
+
+    [HttpGet("api/getTrailer/{movieId}")]
+    public async Task<IActionResult> GetTrailer(int movieId)
+    {
+        try
+        {
+            // Faz a requisição para a API do TMDb para buscar vídeos
+            var response = await _httpClient.GetAsync($"movie/{movieId}/videos?api_key={_apiKey}&language=pt-BR");
+            response.EnsureSuccessStatusCode();
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            var videos = JObject.Parse(jsonResponse)["results"];
+
+            // Filtra apenas o trailer
+            var trailer = videos?.FirstOrDefault(v => v["type"].ToString() == "Trailer");
+
+            if (trailer != null)
+            {
+                // Retorna o link do trailer do YouTube
+                var trailerKey = trailer["key"].ToString();
+                var trailerUrl = $"https://www.youtube.com/embed/{trailerKey}";
+                return Ok(new { trailerUrl });
+            }
+            else
+            {
+                return NotFound(new { message = "Trailer não encontrado" });
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(ex, $"Erro ao buscar trailer para o filme com ID {movieId}");
+            return StatusCode(500, new { message = "Erro ao processar a requisição" });
         }
     }
 
