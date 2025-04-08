@@ -87,6 +87,16 @@
                 animation: fadeIn 0.8s 0.6s forwards;
             }
 
+            .fullscreen.fadeOut {
+                animation: fadeOut 0.8s forwards;
+            }
+
+            .fullscreen img.fadeOut,
+            .fullscreen p.fadeOut {
+                animation: fadeOut 0.8s forwards;
+            }
+
+
         .hidden {
             display: none;
         }
@@ -118,11 +128,14 @@
             const otherCard = document.getElementById(otherCardId);
 
             if (card.classList.contains('fullscreen')) {
-                card.classList.remove('fullscreen');
-                card.innerHTML = `
-                    <img src="${card.querySelector('img').src}" alt="${card.querySelector('p').innerText}">
-                    <p>${card.querySelector('p').innerText}</p>`;
-                otherCard.classList.remove('hidden'); // Torna o outro card visível
+                card.classList.add('fadeOut'); // Adiciona fadeout antes de remover fullscreen
+                setTimeout(() => {
+                    card.classList.remove('fullscreen', 'fadeOut');
+                    card.innerHTML = `
+                        <img src="${card.querySelector('img').src}" alt="${card.querySelector('p').innerText}">
+                        <p>${card.querySelector('p').innerText}</p>`;
+                    otherCard.classList.remove('hidden'); // Exibe o outro card após fadeout
+                }, 500); // Aguarda a duração do fadeout para remover classe
             } else {
                 card.classList.add('fullscreen');
                 card.innerHTML = `
